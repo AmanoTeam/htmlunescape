@@ -9,7 +9,7 @@ srcDir        = "src"
 
 # Dependencies
 
-requires "nim >= 1.4.8"
+requires "nim >= 1.0.0"
 
 task test, "Runs the test suite":
   exec "nim compile --run ./tests/test_escape.nim"
