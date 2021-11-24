@@ -12,4 +12,5 @@ srcDir        = "src"
 requires "nim >= 1.4.8"
 
 task test, "Runs the test suite":
-  exec "nim compile --run tests/test_*.nim"
+  exec "nim compile --run ./tests/test_escape.nim"
+  exec "nim compile --run ./tests/test_unescape.nim"
