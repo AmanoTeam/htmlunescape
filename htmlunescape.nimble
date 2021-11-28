@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1"
+version       = "0.2"
 author        = "SnwMds"
 description   = "Port of Python's html.escape and html.unescape to Nim"
 license       = "LGPL-3.0"
