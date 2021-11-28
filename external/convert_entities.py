@@ -5,16 +5,16 @@ from utils import pprint_to_string
 
 code = """\
 ##[
-  General functions for HTML manipulation.
+  HTML character entity references.
 ]##
 
-# Everything below this line was auto-generated from the Python {} source files.
+import unicode
 
 # maps the HTML5 named character references to the equivalent Unicode character(s)
 const html5*: array[0..{}, (string, string)] = {}
 
 # see http://www.w3.org/TR/html5/syntax.html#tokenizing-character-references
-const invalidCharRefs*: array[0..{}, (int, int)] = {}
+const invalidCharRefs*: array[0..{}, (int, string)] = {}
 
 const invalidCodePoints*: array[0..{}, int] = {}
 """
@@ -22,27 +22,31 @@ const invalidCodePoints*: array[0..{}, int] = {}
 parts = []
 
 # html5
-items = [
-	(key, value) for key, value in html.entities.html5.items()
-]
+items = []
+
+for key, value in html.entities.html5.items():
+	new_value = " & ".join("cast[Rune]({}).toUTF8()".format(hex(ord(char))) for char in value)
+	items.append((key, new_value))
 
 string = pprint_to_string(items)
 
 parts += [
 	len(items) - 1,
-	string.replace("]\n", "\n]").replace("[", "[\n ").replace("'", '"').replace('"""', '"\\""').replace('"[\n "', '"]"')
+	string.replace("'", '"').replace('"""', '"\\""').replace('"[\n "', '"]"').replace('"cast', "cast").replace(')"', ")")
 ]
 
 # invalidCharRefs
-items = [
-	(hex(key), hex(ord(value))) for key, value in html._invalid_charrefs.items()
-]
+items = []
+
+for key, value in html._invalid_charrefs.items():
+	new_value = " & ".join("cast[Rune]({}).toUTF8()".format(hex(ord(char))) for char in value)
+	items.append((hex(key), new_value))
 
 string = pprint_to_string(items)
 
 parts += [
 	len(items) - 1,
-	string.replace("]\n", "\n]").replace("[", "[\n ").replace("'", "")
+	string.replace("'", "")
 ]
 
 # invalidCodePoints
@@ -58,4 +62,4 @@ parts += [
 ]
 
 with open(file = "./src/htmlunescape/entities.nim", mode = "w") as file:
-	file.write(code.format(platform.python_version(), *parts))
+	file.write(code.format(*parts))

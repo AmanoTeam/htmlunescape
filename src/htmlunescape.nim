@@ -54,10 +54,10 @@ proc getMatchingCharRef(match: string): string =
 
         for (key, value) in invalidCharRefs:
             if codePoint == key:
-                return cast[Rune](value).toUTF8()
+                return value
 
         if (0xd800 <= codePoint and codePoint <= 0xdfff) or codePoint > 0x10ffff:
-            return "\uFFFD"
+            return cast[Rune](0xfffd).toUTF8()
 
         for invalidCodePoint in invalidCodePoints:
             if codePoint == invalidCodePoint:
