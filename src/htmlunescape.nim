@@ -9,7 +9,9 @@ import std/unicode
 
 import ./htmlunescape/entities
 
-let charRef: Regex = re"&(?:#[0-9]+;?|#[xX][0-9a-fA-F]+;?|[^\t\n\f <&#;]{1,32};?)"
+var charRef {.threadvar.}: Regex
+
+charRef = re"&(?:#[0-9]+;?|#[xX][0-9a-fA-F]+;?|[^\t\n\f <&#;]{1,32};?)"
 
 proc escape*(s: string, quote: bool = true): string =
     ## Replace special characters `&`, `<` and `>` to HTML-safe sequences.
@@ -101,3 +103,4 @@ proc unescape*(s: string): string =
         s = s,
         replacements = replacements
     )
+
